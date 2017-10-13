@@ -1,6 +1,10 @@
 package ch.appquest.bict.appquest;
 
+import android.app.FragmentManager;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -12,9 +16,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    FragmentManager f = getFragmentManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +47,10 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        f.beginTransaction()
+                .replace(R.id.content_frame, new Metalldetektor())
+                .commit();
     }
 
     @Override
@@ -80,14 +91,26 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
+        if (id == R.id.nav_metalldetektor_layout) {
+            f.beginTransaction()
+                    .replace(R.id.content_frame, new Metalldetektor())
+                    .commit();
+        } else if (id == R.id.nav_dechiffrierer_layout) {
+            f.beginTransaction()
+                    .replace(R.id.content_frame, new Dechiffrierer())
+                    .commit();
+        } else if (id == R.id.nav_memory_layout) {
+            f.beginTransaction()
+                    .replace(R.id.content_frame, new Memory())
+                    .commit();
+        } else if (id == R.id.nav_schatzkarte_layout) {
+            f.beginTransaction()
+                    .replace(R.id.content_frame, new Schatzkarte())
+                    .commit();
+        } else if (id == R.id.nav_pixelmaler_layout) {
+            f.beginTransaction()
+                    .replace(R.id.content_frame, new Pixelmaler())
+                    .commit();
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
@@ -97,5 +120,18 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void log(String json) {
+        Intent intent = new Intent("ch.appquest.intent.LOG");
+
+        if (getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).isEmpty()) {
+            Toast.makeText(this, "Logbook App not Installed", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        intent.putExtra("ch.appquest.logmessage", json);
+
+        startActivity(intent);
     }
 }

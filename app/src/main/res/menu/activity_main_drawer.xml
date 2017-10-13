@@ -3,21 +3,25 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/nav_metalldetektor_layout"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:title="Metalldetektor" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_dechiffrierer_layout"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:title="Dechiffrierer" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_memory_layout"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+            android:title="Memory" />
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/nav_schatzkarte_layout"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:title="Schatzkarte" />
+        <item
+            android:id="@+id/nav_pixelmaler_layout"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Pixelmaler" />
     </group>
 
     <item android:title="Communicate">
