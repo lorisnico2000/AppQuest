@@ -7,8 +7,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,8 +36,10 @@ public class Dechiffrierer extends Fragment{
 
     View myView;
     static final int REQUEST_IMAGE_CAPTURE = 1;
+    static final int REQUEST_TAKE_PHOTO = 1;
     Button btn;
     ImageView drawImg;
+    String mCurrentPhotoPath;
 
     @Nullable
     @Override
@@ -53,7 +57,24 @@ public class Dechiffrierer extends Fragment{
             @Override
             public void onClick(View v) {
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                // Ensure that there's a camera activity to handle the intent
+                if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    // Create the File where the photo should go
+                    File photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException ex) {
+                        // Error occurred while creating the File
+                    }
+                    // Continue only if the File was successfully created
+                    if (photoFile != null) {
+                        Uri photoURI = FileProvider.getUriForFile(getActivity().getApplicationContext(),
+                                "com.example.android.fileprovider",
+                                photoFile);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                        startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                    }
+                }
             }
         });
 
@@ -63,9 +84,10 @@ public class Dechiffrierer extends Fragment{
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bitmap bm = (Bitmap) data.getExtras().get("data");
-            applyFilter(bm);
-            drawImg.setImageBitmap(bm);
+            Uri imageUri = data.getData();
+
+            Bitmap bm = readImageFile(imageUri);
+            drawImg.setImageBitmap(applyFilter(bm));
         }
     }
     private Bitmap applyFilter(Bitmap bitmap) {
@@ -87,5 +109,40 @@ public class Dechiffrierer extends Fragment{
         // anschliessend damit ein neues Bitmap erstellt werden
 
         return Bitmap.createBitmap(data, width, height, Bitmap.Config.ARGB_8888);
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+    private Bitmap readImageFile(Uri imageUri) {
+        File file = new File(imageUri.getPath());
+        InputStream is = null;
+        try {
+            is = new FileInputStream(file);
+            Bitmap bitmap = BitmapFactory.decodeStream(is);
+            return bitmap;
+        } catch (FileNotFoundException e) {
+            Log.e("DECODER", "Could not find image file", e);
+            return null;
+        } finally {
+            if(is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                }
+            }
+        }
     }
 }
