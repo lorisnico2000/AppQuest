@@ -21,6 +21,7 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final int SCAN_QR_CODE_REQUEST_CODE = 0;
     FragmentManager f = getFragmentManager();
 
     @Override
@@ -67,7 +68,19 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+        MenuItem menuItem = menu.add("Log");
+        menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent intent = new Intent("com.google.zxing.client.android.SCAN");
+                intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
+                startActivityForResult(intent, SCAN_QR_CODE_REQUEST_CODE);
+                return false;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -133,5 +146,15 @@ public class MainActivity extends AppCompatActivity
         intent.putExtra("ch.appquest.logmessage", json);
 
         startActivity(intent);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == SCAN_QR_CODE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                String logMsg = intent.getStringExtra("SCAN_RESULT");
+                Toast.makeText(this, logMsg, Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }
