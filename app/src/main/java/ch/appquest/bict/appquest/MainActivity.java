@@ -3,10 +3,14 @@ package ch.appquest.bict.appquest;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,13 +20,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.zxing.client.android.Intents;
+import com.google.zxing.integration.android.IntentIntegrator;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final int SCAN_QR_CODE_REQUEST_CODE = 0;
     FragmentManager f = getFragmentManager();
+    String currentFragment;
+    Metalldetektor metalldetektor;
+    Dechiffrierer dechiffrierer;
+    Memory memory;
+    Schatzkarte schatzkarte;
+    Pixelmaler pixelmaler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,11 +46,18 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        metalldetektor = new Metalldetektor();
+        dechiffrierer = new Dechiffrierer();
+        memory = new Memory();
+        schatzkarte = new Schatzkarte();
+        pixelmaler = new Pixelmaler();
+        currentFragment = "Metalldetektor";
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, currentFragment, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -105,28 +127,31 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_metalldetektor_layout) {
+            currentFragment = "Metalldetektor";
             f.beginTransaction()
-                    .replace(R.id.content_frame, new Metalldetektor())
+                    .replace(R.id.content_frame, metalldetektor)
                     .commit();
         } else if (id == R.id.nav_dechiffrierer_layout) {
+            currentFragment = "Dechiffrierer";
             f.beginTransaction()
-                    .replace(R.id.content_frame, new Dechiffrierer())
+                    .replace(R.id.content_frame, dechiffrierer)
                     .commit();
         } else if (id == R.id.nav_memory_layout) {
+            currentFragment = "Memory";
             f.beginTransaction()
-                    .replace(R.id.content_frame, new Memory())
+                    .replace(R.id.content_frame, memory)
                     .commit();
         } else if (id == R.id.nav_schatzkarte_layout) {
+            currentFragment = "Schatzkarte";
             f.beginTransaction()
-                    .replace(R.id.content_frame, new Schatzkarte())
+                    .replace(R.id.content_frame, schatzkarte)
                     .commit();
         } else if (id == R.id.nav_pixelmaler_layout) {
+            currentFragment = "Pixelmaler";
             f.beginTransaction()
-                    .replace(R.id.content_frame, new Pixelmaler())
+                    .replace(R.id.content_frame, pixelmaler)
                     .commit();
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_log) {
 
         }
 
