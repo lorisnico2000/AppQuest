@@ -36,30 +36,36 @@ public class Memory extends Fragment{
     ArrayList<CardView> cardviews;
     ArrayList<String> codes;
     ArrayList<String[]> json;
+    Boolean firstStart = true;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        myView = inflater.inflate(R.layout.memory_layout, container, false);
-        btn = (Button) myView.findViewById(R.id.btnCamera);
-        btn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                takeQrCodePicture();
-            }
-        });
-        btnSelection = (Button) myView.findViewById(R.id.btnSelection);
-        btnSelection.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                addSelection();
-            }
-        });
-        layout = (LinearLayout) myView.findViewById(R.id.linearLayout);
-        selected = new ArrayList<Integer>();
-        cardviews = new ArrayList<CardView>();
-        codes = new ArrayList<String>();
-        json = new ArrayList<String[]>();
+        if(firstStart){
+            myView = inflater.inflate(R.layout.memory_layout, container, false);
+            btn = (Button) myView.findViewById(R.id.btnCamera);
+            btn.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    takeQrCodePicture();
+                }
+            });
+            btnSelection = (Button) myView.findViewById(R.id.btnSelection);
+            btnSelection.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    addSelection();
+                }
+            });
+            layout = (LinearLayout) myView.findViewById(R.id.linearLayout);
+            selected = new ArrayList<Integer>();
+            cardviews = new ArrayList<CardView>();
+            codes = new ArrayList<String>();
+            json = new ArrayList<String[]>();
+
+            firstStart = false;
+        }
+
         return myView;
     }
     public void takeQrCodePicture() {
@@ -129,7 +135,7 @@ public class Memory extends Fragment{
             json.add(s);
         }
     }
-    public void log(){
+    public String log(){
         String solution = "{ \"task\": \"Memory\", \"solution\": [";
         for (int i = 0; i <json.size(); i++){
             String temp = "[\"" + json.get(i)[0] + "\",\"" + json.get(i)[1] + "\"]";
@@ -139,5 +145,6 @@ public class Memory extends Fragment{
             solution += temp;
         }
         solution += "] }";
+        return solution;
     }
 }

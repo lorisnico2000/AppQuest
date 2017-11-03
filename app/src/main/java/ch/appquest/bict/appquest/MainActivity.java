@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 if(currentFragment == "Memory"){
-                    memory.log();
+                    log(memory.log());
                 }
                 Snackbar.make(view, currentFragment, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
