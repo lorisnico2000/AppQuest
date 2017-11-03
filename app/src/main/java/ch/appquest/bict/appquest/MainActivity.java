@@ -57,6 +57,9 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(currentFragment == "Memory"){
+                    memory.log();
+                }
                 Snackbar.make(view, currentFragment, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
@@ -181,5 +184,20 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(this, logMsg, Toast.LENGTH_LONG).show();
             }
         }
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == IntentIntegrator.REQUEST_CODE
+                && resultCode == RESULT_OK) {
+
+            Bundle extras = intent.getExtras();
+            String path = extras.getString(
+                    Intents.Scan.RESULT_BARCODE_IMAGE_PATH);
+
+            Bitmap bmp = BitmapFactory.decodeFile(path);
+            String code = extras.getString(
+                    Intents.Scan.RESULT);
+            Log.d("text", code);
+            memory.addView(bmp, code);
+        }
+        Log.d("asdf", "asdf");
     }
 }
