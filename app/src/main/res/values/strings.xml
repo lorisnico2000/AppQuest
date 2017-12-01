@@ -8,4 +8,7 @@
     <string name="closeDrawer">close_drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <integer name="FINE_LOCATION_REQUESTCODE">133</integer>
+    <integer name="COARSE_LOCATION_REQUESTCODE">134</integer>
 </resources>
