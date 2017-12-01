@@ -38,6 +38,7 @@ public class Memory extends Fragment{
     ArrayList<String[]> json;
     Boolean firstStart = true;
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {

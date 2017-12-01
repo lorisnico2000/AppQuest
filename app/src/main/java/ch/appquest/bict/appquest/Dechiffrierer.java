@@ -36,13 +36,17 @@ public class Dechiffrierer extends Fragment{
     static final int REQUEST_IMAGE_CAPTURE = 1;
     Button btn;
     ImageView drawImg;
+    Boolean firstStart = true;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        myView = inflater.inflate(R.layout.dechiffrierer_layout, container, false);
-        btn = (Button) myView.findViewById(R.id.btnCamera);
-        drawImg = (ImageView) myView.findViewById(R.id.imgView);
+        if(firstStart){
+            myView = inflater.inflate(R.layout.dechiffrierer_layout, container, false);
+            btn = (Button) myView.findViewById(R.id.btnCamera);
+            drawImg = (ImageView) myView.findViewById(R.id.imgView);
+            firstStart = false;
+        }
         return myView;
     }
 
